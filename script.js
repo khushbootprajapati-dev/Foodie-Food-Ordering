@@ -25,7 +25,7 @@ function renderFoods() {
     (food.name.toLowerCase().includes(query) || food.category.toLowerCase().includes(query) || food.description.toLowerCase().includes(query)));
   foodGrid.innerHTML = filtered.map(food => `
     <article class="food-card">
-      <div class="food-image"><img src="${food.image}" alt="${food.name}" loading="lazy" onerror="this.src='https://placehold.co/600x400/f8eee5/8b6b55?text=Foodie'"><span class="food-badge">★ ${food.rating} · ${food.badge}</span></div>
+      <div class="food-image"><img src="${food.image}" alt="${food.name}" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80'"><span class="food-badge">★ ${food.rating} · ${food.badge}</span></div>
       <div class="food-info"><span class="food-category">${food.category}</span><h3>${food.name}</h3><p class="food-description">${food.description}</p><div class="food-bottom"><span class="food-price">${money(food.price)}</span><button class="add-button" data-add="${food.id}" aria-label="Add ${food.name} to cart">+</button></div></div>
     </article>`).join("");
   document.getElementById("empty-state").hidden = filtered.length > 0;
@@ -83,6 +83,17 @@ function showToast(message) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
 }
+
+// Smooth-scroll all in-page links and account for the sticky header.
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener("click", event => {
+    const target = document.getElementById(link.getAttribute("href").slice(1));
+    if (!target) return;
+    event.preventDefault();
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    history.replaceState(null, "", link.getAttribute("href"));
+  });
+});
 
 document.getElementById("category-list").addEventListener("click", event => {
   const button = event.target.closest("[data-category]");
